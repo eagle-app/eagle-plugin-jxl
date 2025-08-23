@@ -1,15 +1,23 @@
-# Eagle JXL Format Extension
+# Eagle Plugin - JXL Format Support
 
-A plugin for [Eagle](https://eagle.cool/) that enables JPEG XL (JXL) image format support with automatic thumbnail generation and preview capabilities.
+An Eagle format extension plugin that adds support for JPEG XL (JXL) image format, enabling preview and thumbnail generation in Eagle App.
+
+## What is JXL?
+
+JPEG XL (JXL) is a next-generation image format that offers:
+- Better compression than JPEG (up to 60% smaller file sizes)
+- Lossless compression support
+- Progressive decoding
+- Wide color gamut and HDR support
+- Animation support
 
 ## Features
 
-- 🚀 **Native Browser Support First** - Utilizes native JXL decoding when available for optimal performance
-- 🔧 **WASM Fallback** - Automatically falls back to WebAssembly decoder for unsupported JXL variants
-- 🖼️ **Thumbnail Generation** - Automatic thumbnail creation for JXL images in Eagle
-- 👁️ **Image Preview** - Built-in viewer for JXL format files
-- 🌍 **Multi-language Support** - Available in 8 languages (EN, ZH-TW, ZH-CN, JA, ES, RU, DE, KO)
-- ⚡ **Performance Optimized** - Uses Web Workers and transferable objects for efficient memory usage
+- 🖼️ **Preview Support** - View JXL images directly in Eagle
+- 🔍 **Thumbnail Generation** - Automatic thumbnail creation for JXL files
+- 🚀 **Smart Decoding** - Prioritizes native browser support, falls back to WASM when needed
+- 🌍 **Multi-language** - Supports 8 languages
+- ⚡ **Optimized Performance** - Uses Web Workers to prevent UI blocking
 
 ## How It Works
 
@@ -57,48 +65,50 @@ The plugin implements a three-tier intelligent fallback system:
 
 ## Installation
 
-1. Download the plugin from [Releases](https://github.com/yourusername/eagle-plugin-jxl/releases)
-2. In Eagle, go to Settings → Plugins
-3. Click "Import Plugin" and select the downloaded folder
-4. Enable the plugin
+### Method 1: Install from Eagle Plugin Store (Recommended)
+1. Open Eagle App
+2. Go to Plugin Store
+3. Search for "JXL Format"
+4. Click Install
 
-## Development
+### Method 2: Manual Installation
+1. Download the latest release from [GitHub Releases](https://github.com/eagle-app/eagle-plugin-jxl/releases)
+2. Extract the ZIP file
+3. In Eagle, go to Menu → Plugins → Developer Mode → Load Plugin
+4. Select the extracted folder
 
-### Prerequisites
-
-- Node.js (for testing)
-- Python 3 (for local test server)
-
-### Project Structure
+## Project Structure
 
 ```
 eagle-plugin-jxl/
-├── manifest.json           # Plugin configuration
-├── jxl2canvas.js          # Main decoder module
-├── jxl_dec.js             # WebAssembly worker
-├── jxl_dec.wasm           # JXL decoder WASM binary
+├── manifest.json          # Plugin manifest file
+├── jxl2canvas.js         # Core JXL decoder module
+├── jxl_dec.js            # WebAssembly worker
+├── jxl_dec.wasm          # JXL decoder WASM binary
 ├── thumbnail/
-│   └── thumbnail.js       # Thumbnail generator
+│   └── thumbnail.js      # Thumbnail generator for Eagle
 ├── viewer/
-│   └── index.html         # JXL viewer interface
-└── _locales/              # Internationalization files
+│   └── index.html        # Preview interface
+└── _locales/             # Localization files (8 languages)
 ```
 
-### Testing
+## Development
 
-1. Start a local web server:
+### Testing in Eagle
+
+1. Clone this repository
+2. Open Eagle App
+3. Enable Developer Mode: Menu → Plugins → Developer Mode
+4. Load unpacked plugin: Select this plugin folder
+5. Import a JXL image to test
+
+### Building from Source
+
 ```bash
-python3 -m http.server 8080
+git clone https://github.com/eagle-app/eagle-plugin-jxl.git
+cd eagle-plugin-jxl
+# No build step required - plugin runs directly
 ```
-
-2. Open http://localhost:8080/test.html in your browser
-
-### Key Components
-
-- **jxl2canvas.js**: Core module that handles the decoding strategy and fallback logic
-- **jxl_dec.js/wasm**: WebAssembly-based JXL decoder from [jxl.js](https://github.com/niutech/jxl.js)
-- **thumbnail.js**: Generates PNG thumbnails from decoded JXL images
-- **viewer/index.html**: Provides the preview interface within Eagle
 
 ## Performance Optimizations
 
@@ -107,32 +117,30 @@ python3 -m http.server 8080
 - **Immediate Worker Termination**: Frees memory as soon as decoding completes
 - **Smart Timeout Management**: Prevents resource locks and hanging operations
 
-## Browser Compatibility
+## Compatibility
 
-- Chrome/Edge 91+ (with experimental JXL support)
-- Firefox (with WASM fallback)
-- Safari (with WASM fallback)
-- Electron-based apps like Eagle
+- **Eagle Version**: 4.0+
+- **Supported Platforms**: Windows, macOS, Linux
+- **File Extension**: `.jxl`
 
 ## Credits
 
 - JXL WebAssembly decoder: [jxl.js](https://github.com/niutech/jxl.js) by niutech
 - Original HEIC plugin structure adapted for JXL support
 
-## License
-
-MIT License - See [LICENSE](LICENSE) file for details
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Known Issues
+## Technical Notes
 
-- Some exotic JXL encoding parameters may require WASM fallback
-- Large files (>10MB) may take longer to decode with WASM
-- Native browser JXL support is still experimental and may vary
+- Uses native browser JXL support when available (Chrome 91+)
+- Falls back to WebAssembly decoder for universal compatibility
+- Large files may take longer to decode with WASM
+- Some exotic JXL variants may require the WASM decoder
 
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/yourusername/eagle-plugin-jxl/issues) page.
+- **Bug Reports**: [GitHub Issues](https://github.com/eagle-app/eagle-plugin-jxl/issues)
+- **Eagle Documentation**: [developer.eagle.cool](https://developer.eagle.cool)
+- **Plugin API Reference**: [Format Extension Guide](https://developer.eagle.cool/plugin-api/get-started/plugin-types/preview)
