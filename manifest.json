@@ -1,0 +1,26 @@
+{
+    "id": "jxl-format-extension",
+    "version": "1.0.0",
+    "platform": "all",
+    "arch": "all",
+    "name": "JXL Format Extension",
+    "logo": "/logo.png",
+    "fallbackLanguage": "en",
+    "languages": ["en", "zh_TW", "zh_CN", "ja_JP", "es_ES", "ru_RU", "de_DE", "ko_KR"],
+    "keywords": [
+        "jxl", "image", "format", "extension"
+    ],
+    "devTools": false,
+    "preview": {
+        "jxl": {
+            "thumbnail": {
+                "path": "thumbnail/thumbnail.js",
+                "size": 400
+            },
+            "viewer": {
+                "path": "viewer/index.html",
+                "allowZoom": true
+            }
+        }
+    }
+}

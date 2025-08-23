@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>JXL Viewer</title>
+	<style>
+		html, body {
+            height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		#preview, #viewer {
+			pointer-events: none;
+			object-fit: contain;
+			object-position: center;
+			width: 100%;
+			height: 100%;
+			max-width: 100vw;
+    		max-height: 100vh;
+		}
+	</style>
+</head>
+<body>
+	<img id="preview"/>
+	<script>
+		const urlParams = new URLSearchParams(window.location.search);
+		const filePath = urlParams.get('path');
+		const width = urlParams.get('width');
+		const height = urlParams.get('height');
+		const theme = urlParams.get('theme');
+		const lang = urlParams.get('lang');
+		const preview = document.querySelector('#preview');
+
+        preview.src = filePath.replace(/\.jxl$/, "_thumbnail.png");
+
+        eagle.onPluginCreate(async (plugin) => {
+            global.plugin = eagle.plugin;
+
+            const jxl2canvas = require(eagle.plugin.path + '/jxl2canvas.js');
+            const jxlData = await jxl2canvas(filePath, eagle.plugin);
+			const canvas = jxlData.canvas;
+			canvas.id = 'viewer';
+
+			preview.remove();
+			document.body.appendChild(canvas);
+        });
+	</script>
+</body>
+</html>
