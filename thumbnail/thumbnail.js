@@ -8,7 +8,7 @@ module.exports = async ({ src, dest, item, startAt, plugin }) => {
 	return new Promise(async (resolve, reject) => {
 
 		try {
-			const { canvas, width, height } = await jxl2canvas(src, plugin);
+			const { canvas, width, height, animated } = await jxl2canvas(src, plugin);
 
 			const base64 = canvas.toDataURL();
 
@@ -21,6 +21,10 @@ module.exports = async ({ src, dest, item, startAt, plugin }) => {
 
 			item.height = height || item.height;
 			item.width = width || item.width;
+			// Like Eagle's animated WebP/AVIF: lets the grid play the original file ("Autoplay GIFs / WebP / AVIF").
+			if (animated) {
+				item.animated = true;
+			}
 			
 			resolve(item);
 		}

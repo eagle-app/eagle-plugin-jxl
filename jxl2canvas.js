@@ -2,13 +2,15 @@ module.exports = async (src, plugin) => {
     return new Promise(async (resolve, reject) => {
         const fs = require('fs');
         const path = require('path');
+        const { isAnimated } = require('./jxl-header.js');
         
         // First, try native browser JXL support
         try {
             console.log('Attempting native JXL decoding...');
             const image = await new Promise((resolve, reject) => {
                 const img = new Image();
-                img.src = src;
+                // A file URL, so names containing '#' or '?' still resolve to the file
+                img.src = require('url').pathToFileURL(src).href;
                 
                 img.onload = () => {
                     // Check if image actually loaded with valid dimensions
@@ -32,19 +34,28 @@ module.exports = async (src, plugin) => {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(image, 0, 0);
             
-            // Verify canvas has actual image data (not empty/transparent)
-            const imageData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
-            const hasContent = imageData.data.some((value, index) => {
-                // Check if any pixel has non-transparent content
-                return (index % 4 === 3) ? value > 0 : value !== 0;
-            });
+            // Verify canvas has actual image data (not empty/transparent).
+            // Check a downscaled copy of the whole image: a transparent corner
+            // (common in animations and cut-outs) doesn't mean decoding failed.
+            const scale = Math.min(1, 256 / Math.max(canvas.width, canvas.height));
+            const sample = document.createElement('canvas');
+            sample.width = Math.max(1, Math.round(canvas.width * scale));
+            sample.height = Math.max(1, Math.round(canvas.height * scale));
+            const sampleCtx = sample.getContext('2d');
+            sampleCtx.imageSmoothingQuality = 'high';
+            sampleCtx.drawImage(canvas, 0, 0, sample.width, sample.height);
+            const hasContent = sampleCtx.getImageData(0, 0, sample.width, sample.height).data.some((value) => value !== 0);
             
             if (hasContent) {
                 console.log('Successfully decoded JXL using native browser support');
                 return resolve({
                     canvas: canvas,
                     width: image.naturalWidth,
-                    height: image.naturalHeight
+                    height: image.naturalHeight,
+                    // The canvas holds one frame; animations play in the native <img>.
+                    // (The WASM decoder below only returns the first frame.)
+                    animated: isAnimated(src),
+                    image: image
                 });
             } else {
                 console.log('Native decoding produced empty canvas, falling back to WASM');
