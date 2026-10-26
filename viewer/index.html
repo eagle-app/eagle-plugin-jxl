@@ -39,11 +39,12 @@
 
             const jxl2canvas = require(eagle.plugin.path + '/jxl2canvas.js');
             const jxlData = await jxl2canvas(filePath, eagle.plugin);
-			const canvas = jxlData.canvas;
-			canvas.id = 'viewer';
+			// A canvas only holds one frame, so animations are shown in the natively decoded <img>.
+			const viewer = jxlData.animated ? jxlData.image : jxlData.canvas;
+			viewer.id = 'viewer';
 
 			preview.remove();
-			document.body.appendChild(canvas);
+			document.body.appendChild(viewer);
         });
 	</script>
 </body>

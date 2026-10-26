@@ -83,6 +83,7 @@ The plugin implements a three-tier intelligent fallback system:
 eagle-plugin-jxl/
 ├── manifest.json          # Plugin manifest file
 ├── jxl2canvas.js         # Core JXL decoder module
+├── jxl-header.js         # Reads the JXL header (animation detection)
 ├── jxl_dec.js            # WebAssembly worker
 ├── jxl_dec.wasm          # JXL decoder WASM binary
 ├── thumbnail/
@@ -138,6 +139,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Falls back to WebAssembly decoder for universal compatibility
 - Large files may take longer to decode with WASM
 - Some exotic JXL variants may require the WASM decoder
+- Animated JXL plays in the viewer when decoded natively; the WASM decoder only renders the first frame. Animated items are flagged so Eagle can play them in the grid when "Autoplay GIFs / WebP / AVIF" is enabled in Preferences
 
 ## Support
 
